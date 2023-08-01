@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/niiharamegumu/togo/db"
 	"github.com/niiharamegumu/togo/models"
 	"github.com/spf13/cobra"
 )
@@ -11,29 +10,34 @@ import (
 var delCmd = &cobra.Command{
 	Use:     "del",
 	Short:   "delete task",
-	Example: "togo delete [id]",
-	Run: func(cmd *cobra.Command, args []string) {
-		taskID := args[0]
+	Example: "togo del [id]",
+	Run:     deleteTask,
+}
 
-		db, err := db.ConnectDB()
-		if err != nil {
-			fmt.Println("🚨 データベースに接続できませんでした:", err)
-			return
-		}
+func init() {
+	rootCmd.AddCommand(delCmd)
+}
 
-		var task models.Task
-		result := db.First(&task, taskID)
-		if result.Error != nil {
-			fmt.Println("🚨 タスクの取得に失敗しました:", result.Error)
-			return
-		}
+func deleteTask(cmd *cobra.Command, args []string) {
+	if len(args) == 0 {
+		fmt.Println("❌ 削除するタスクのIDを指定してください。")
+		return
+	}
 
-		result = db.Delete(&task)
-		if result.Error != nil {
-			fmt.Println("🚨 タスクの削除に失敗しました:", result.Error)
-			return
-		}
+	taskID := args[0]
 
-		fmt.Println("👉 Delete Task")
-	},
+	var task models.Task
+	result := dbConn.First(&task, taskID)
+	if result.Error != nil {
+		fmt.Println("🚨 タスクの取得に失敗しました:", result.Error)
+		return
+	}
+
+	result = dbConn.Delete(&task)
+	if result.Error != nil {
+		fmt.Println("🚨 タスクの削除に失敗しました:", result.Error)
+		return
+	}
+
+	fmt.Print("👉 Delete Task")
 }

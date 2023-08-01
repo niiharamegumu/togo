@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/niiharamegumu/togo/db"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 )
 
 var rootCmd = &cobra.Command{
@@ -12,12 +14,15 @@ var rootCmd = &cobra.Command{
 	Short: "Task Management CLI",
 }
 
+var dbConn *gorm.DB
+
 func init() {
-	rootCmd.AddCommand(addCmd)
-	rootCmd.AddCommand(listCmd)
-	rootCmd.AddCommand(updateCmd)
-	rootCmd.AddCommand(doneCmd)
-	rootCmd.AddCommand(delCmd)
+	var err error
+	dbConn, err = db.ConnectDB()
+	if err != nil {
+		fmt.Println("🚨 データベースに接続できませんでした:", err)
+		os.Exit(1)
+	}
 }
 
 func Execute() {

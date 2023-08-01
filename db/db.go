@@ -19,7 +19,7 @@ func ConnectDB() (*gorm.DB, error) {
 		return DB, nil
 	}
 
-	rootPath :=  os.Getenv("TOGO_PROJECT_ROOT_PATH")
+	rootPath := os.Getenv("TOGO_PROJECT_ROOT_PATH")
 	if rootPath == "" {
 		fmt.Println(".envに TOGO_PROJECT_ROOT_PATH を設定してください。")
 		return nil, fmt.Errorf("環境変数 TOGO_PROJECT_ROOT_PATH が設定されていません")

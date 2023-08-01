@@ -24,28 +24,28 @@ var listCmd = &cobra.Command{
 
 		db, err := db.ConnectDB()
 		if err != nil {
-			fmt.Println("データベースに接続できませんでした:", err)
+			fmt.Println("🚨 データベースに接続できませんでした:", err)
 			return
 		}
 
 		var tasks []models.Task
 		var result *gorm.DB
 
-		if statusFilter == "pen" || statusFilter ==  "" {
+		if statusFilter == "pen" || statusFilter == "" {
 			result = db.Find(&tasks, "status = ?", models.StatusPending)
-		}else if statusFilter == "done" {
+		} else if statusFilter == "done" {
 			result = db.Find(&tasks, "status = ?", models.StatusDone)
 		} else {
 			result = db.Find(&tasks)
 		}
 
 		if result.Error != nil {
-			fmt.Println("タスクの取得に失敗しました:", result.Error)
+			fmt.Println("🚨 タスクの取得に失敗しました:", result.Error)
 			return
 		}
 
 		if len(tasks) == 0 {
-			fmt.Println("=== No Tasks ===")
+			fmt.Println("👉  No Tasks")
 			return
 		}
 

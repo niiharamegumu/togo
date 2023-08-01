@@ -53,13 +53,18 @@ var listCmd = &cobra.Command{
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetHeader([]string{"ID", "Title", "Status", "Date"})
 
-		for _, task := range tasks {
+		n := len(tasks)
+		for i, task := range tasks {
 			table.Append([]string{
 				fmt.Sprintf("%d", task.ID),
 				task.Title,
 				task.Status,
 				task.CreatedAt.Format("2006/01/02 15:04"),
 			})
+
+			if i != n-1 {
+				table.Append([]string{"", "", "", ""})
+			}
 		}
 
 		table.Render()

@@ -31,7 +31,7 @@ var listCmd = &cobra.Command{
 		var tasks []models.Task
 		var result *gorm.DB
 
-		if statusFilter == "pen" {
+		if statusFilter == "pen" || statusFilter ==  "" {
 			result = db.Find(&tasks, "status = ?", models.StatusPending)
 		}else if statusFilter == "done" {
 			result = db.Find(&tasks, "status = ?", models.StatusDone)

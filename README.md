@@ -41,7 +41,13 @@ togo
 To add a new task, use the following command:
 
 ```
-togo add "Task Title"
+togo add
+```
+
+interactive mode
+
+```
+Enter the new task title : write new tittle
 ```
 
 ### List Tasks

@@ -24,7 +24,6 @@ func init() {
 }
 
 func listTasks(cmd *cobra.Command, args []string) {
-	today := time.Now().Format("[TODAY:2006/01/02]")
 	var statusFilter string
 	if len(args) > 0 {
 		statusFilter = args[0]
@@ -55,16 +54,17 @@ func listTasks(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Printf("%v TOGO LIST : \n", today)
+	today := time.Now().Format("TODAY:2006/01/02")
+	fmt.Printf("%v\n", today)
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID", "Title", "Status", "Date"})
-
+	table.SetHeader(models.TaskTableHeader)
 	n := len(tasks)
 	for i, task := range tasks {
 		table.Append([]string{
 			fmt.Sprintf("%d", task.ID),
 			task.Title,
 			task.Status,
+			fmt.Sprintf("%d", task.Priority),
 			task.CreatedAt.Format("2006/01/02 15:04"),
 		})
 

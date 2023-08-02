@@ -20,13 +20,16 @@ const (
 	StatusDone    = "Done"
 )
 
+var TaskTableHeader = []string{"ID", "Title", "Status", "Priority", "Date"}
+
 func (task *Task) RenderTaskTable() {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID", "Title", "Status", "Date"})
+	table.SetHeader(TaskTableHeader)
 	table.Append([]string{
 		fmt.Sprintf("%d", task.ID),
 		task.Title,
 		task.Status,
+		fmt.Sprintf("%d", task.Priority),
 		task.CreatedAt.Format("2006/01/02 15:04"),
 	})
 	table.Render()

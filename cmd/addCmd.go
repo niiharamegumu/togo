@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/niiharamegumu/togo/models"
@@ -32,15 +33,29 @@ func addTask(cmd *cobra.Command, args []string) {
 	}
 
 	taskTitle = strings.TrimSpace(taskTitle)
-
 	if taskTitle == "" {
 		fmt.Println("👌 Exiting the process")
 		return
 	}
 
+	fmt.Printf("Enter the Priority (0-100) : ")
+	reader = bufio.NewReader(os.Stdin)
+	priorityStr, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("🚨 Error reading input:", err)
+		return
+	}
+
+	priorityStr = strings.TrimSpace(priorityStr)
+	priority, err := strconv.Atoi(priorityStr)
+	if err != nil {
+		priority = 0
+	}
+
 	task := models.Task{
-		Title:  taskTitle,
-		Status: models.StatusPending,
+		Title:    taskTitle,
+		Status:   models.StatusPending,
+		Priority: priority,
 	}
 
 	result := dbConn.Create(&task)

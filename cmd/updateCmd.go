@@ -51,15 +51,26 @@ func updateTask(cmd *cobra.Command, args []string) {
 		fmt.Println("🚨 Error reading input:", err)
 		return
 	}
-
 	newTitle = strings.TrimSpace(newTitle)
-
 	if newTitle == "" {
-		fmt.Println("👌 No changes made")
+		newTitle = task.Title
+	}
+	task.Title = newTitle
+
+	fmt.Printf("Enter the Priority (0-100) : ")
+	reader = bufio.NewReader(os.Stdin)
+	priorityStr, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("🚨 Error reading input:", err)
 		return
 	}
+	priorityStr = strings.TrimSpace(priorityStr)
+	priority, err := strconv.Atoi(priorityStr)
+	if err != nil {
+		priority = 0
+	}
+	task.Priority = priority
 
-	task.Title = newTitle
 	result = dbConn.Save(&task)
 	if result.Error != nil {
 		fmt.Println("🚨 Failed to update the task:", result.Error)

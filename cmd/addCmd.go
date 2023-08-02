@@ -51,6 +51,12 @@ func addTask(cmd *cobra.Command, args []string) {
 	if err != nil {
 		priority = 0
 	}
+	if priority < 0 {
+		priority = 0
+	}
+	if priority > 100 {
+		priority = 100
+	}
 
 	task := models.Task{
 		Title:    taskTitle,

@@ -8,11 +8,11 @@ import (
 	"gorm.io/gorm"
 )
 
-// Task データモデル
 type Task struct {
 	gorm.Model
-	Title  string
-	Status string
+	Title    string `gorm:"size:255; not null"`
+	Status   string `gorm:"size:255; default:'Pending'; not null"`
+	Priority int    `gorm:"size:100; default:0; not null; min:0; max:100"`
 }
 
 const (

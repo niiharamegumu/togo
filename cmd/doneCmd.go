@@ -10,6 +10,7 @@ import (
 var doneCmd = &cobra.Command{
 	Use:     "done",
 	Short:   "Mark a task as done",
+	Aliases: []string{"d"},
 	Example: "togo done [id]",
 	Run:     markTaskAsDone,
 }

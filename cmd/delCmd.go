@@ -10,6 +10,7 @@ import (
 var delCmd = &cobra.Command{
 	Use:     "del",
 	Short:   "delete task",
+	Aliases: []string{"de"},
 	Example: "togo del [id]",
 	Run:     deleteTask,
 }

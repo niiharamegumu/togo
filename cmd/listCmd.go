@@ -14,6 +14,7 @@ import (
 var listCmd = &cobra.Command{
 	Use:     "list [status]",
 	Short:   "List tasks by status",
+	Aliases: []string{"l"},
 	Example: "togo list [ status: pen | done | all | '']",
 	Run:     listTasks,
 }

@@ -10,6 +10,7 @@ import (
 var addCmd = &cobra.Command{
 	Use:     "add",
 	Short:   "Add a new task",
+	Aliases: []string{"a"},
 	Example: "togo add [\"Task title\"]",
 	Run:     addTask,
 }

@@ -10,6 +10,7 @@ import (
 var updateCmd = &cobra.Command{
 	Use:     "update [id] [title]",
 	Short:   "Update a task's title",
+	Aliases: []string{"u"},
 	Example: "togo update [id] [\"Update title\"]",
 	Run:     updateTask,
 }

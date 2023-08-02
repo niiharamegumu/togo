@@ -1,25 +1,24 @@
 # TOGO
 
-TOGO は、ターミナル上で動作するタスク管理のためのシンプルな CLI ツールです。以下のコマンドを使ってタスクの追加、一覧表示、更新、完了などの操作が行えます。
+TOGO is a simple CLI tool for task management that runs on the terminal. You can use the following commands to perform tasks such as adding, listing, updating, and completing tasks.
 
-## インストール方法
+## Installation
 
-TOGO をインストールするには、以下の手順を実行してください。
+To install TOGO, follow these steps:
 
-1. Go 言語がインストールされていることを確認します。インストールされていない場合は、[Go 公式サイト](https://golang.org/)からインストーラーをダウンロードしてインストールしてください。
-   その後、プロジェクトを作成してください。
+1. Make sure you have Go language installed. If it's not installed, download the installer from the Go official website and install it. After that, create a new project:
 
 ```
 go mod init xxx
 ```
 
-2. `go get`コマンドを使用して TOGO をインストールします。
+2. Use the `go get` command to install TOGO:
 
 ```shell
 go get github.com/niiharamegumu/togo
 ```
 
-3. プロジェクトルートの環境変数を指定して下さい。
+3. Specify the project root path in the environment variable of the project root:
 
 ```
 export TOGO_PROJECT_ROOT_PATH=
@@ -29,42 +28,50 @@ export TOGO_PROJECT_ROOT_PATH=
 source ~/.zshrc
 ```
 
-4. `togo`コマンドが使用可能になります。以下のようにコマンドを実行して動作を確認してください。
+4. The `togo` command will now be available. Execute the command below to confirm it's working:
 
 ```
-togo --help
+togo
 ```
 
-## コマンド一覧
+## Command List
 
-### タスクの追加
+### Add Task
 
-新しいタスクを追加するには、以下のコマンドを使用します。
-
-```
-togo add "タスクのタイトル"
-```
-
-### タスクの一覧表示
-
-現在のタスクの一覧を表示するには、以下のコマンドを使用します。option [pen / done]
+To add a new task, use the following command:
 
 ```
-togo list ["pen" | "done"]
+togo add "Task Title"
 ```
 
-### タスクの更新
+### List Tasks
+
+To display the list of current tasks, use the following command with the option [pen | done | all]:
+
+```
+togo list ["pen" | "done" | "all" | ""]
+```
+
+### Update Task
 
 既存のタスクのタイトルを更新するには、以下のコマンドを使用します。
 
 ```
-togo update [タスクID] "新しいタスクのタイトル"
+togo update [ID] "New Task Title"
 ```
 
-### タスクを完了する
+### Complete Task
 
-タスクを完了済みにするには、以下のコマンドを使用します。
+To mark a task as completed, use the following command:
 
 ```
-togo done [タスクID]
+togo done [ID]
+```
+
+### Delete Task
+
+To delete a task, use the following command:
+
+```
+togo del [ID]
 ```

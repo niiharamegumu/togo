@@ -21,7 +21,7 @@ func init() {
 
 func updateTask(cmd *cobra.Command, args []string) {
 	if len(args) < 2 {
-		fmt.Println("❌ タスクIDとタイトルを指定してください。")
+		fmt.Println("❌ Please specify the task ID and title")
 		return
 	}
 
@@ -31,14 +31,14 @@ func updateTask(cmd *cobra.Command, args []string) {
 	var task models.Task
 	result := dbConn.First(&task, taskID)
 	if result.Error != nil {
-		fmt.Println("🚨 タスクの取得に失敗しました:", result.Error)
+		fmt.Println("🚨 Failed to retrieve the task:", result.Error)
 		return
 	}
 
 	task.Title = taskTitle
 	result = dbConn.Save(&task)
 	if result.Error != nil {
-		fmt.Println("🚨 タスクの更新に失敗しました:", result.Error)
+		fmt.Println("🚨 Failed to update the task:", result.Error)
 		return
 	}
 

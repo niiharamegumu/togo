@@ -21,7 +21,7 @@ func init() {
 
 func deleteTask(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
-		fmt.Println("❌ 削除するタスクのIDを指定してください。")
+		fmt.Println("❌ Please specify the ID of the task to be deleted")
 		return
 	}
 
@@ -30,13 +30,13 @@ func deleteTask(cmd *cobra.Command, args []string) {
 	var task models.Task
 	result := dbConn.First(&task, taskID)
 	if result.Error != nil {
-		fmt.Println("🚨 タスクの取得に失敗しました:", result.Error)
+		fmt.Println("🚨 Failed to retrieve the task:", result.Error)
 		return
 	}
 
 	result = dbConn.Delete(&task)
 	if result.Error != nil {
-		fmt.Println("🚨 タスクの削除に失敗しました:", result.Error)
+		fmt.Println("🚨 Failed to delete the task:", result.Error)
 		return
 	}
 

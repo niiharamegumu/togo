@@ -21,7 +21,7 @@ func init() {
 
 func markTaskAsDone(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
-		fmt.Println("❌ 完了済みにするタスクのIDを指定してください。")
+		fmt.Println("❌ Please specify the ID of the task to mark as completed")
 		return
 	}
 
@@ -30,14 +30,14 @@ func markTaskAsDone(cmd *cobra.Command, args []string) {
 	var task models.Task
 	result := dbConn.First(&task, taskID)
 	if result.Error != nil {
-		fmt.Println("🚨 タスクの取得に失敗しました:", result.Error)
+		fmt.Println("🚨 Failed to retrieve the task:", result.Error)
 		return
 	}
 
 	task.Status = models.StatusDone
 	result = dbConn.Save(&task)
 	if result.Error != nil {
-		fmt.Println("🚨 タスクの更新に失敗しました:", result.Error)
+		fmt.Println("🚨 Failed to update the task:", result.Error)
 		return
 	}
 

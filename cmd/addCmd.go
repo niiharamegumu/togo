@@ -21,7 +21,7 @@ func init() {
 
 func addTask(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
-		fmt.Println("❌ タスクのタイトルを指定してください。")
+		fmt.Println("❌ Please specify the task title")
 		return
 	}
 
@@ -34,7 +34,7 @@ func addTask(cmd *cobra.Command, args []string) {
 
 	result := dbConn.Create(&task)
 	if result.Error != nil {
-		fmt.Println("🚨 タスクの追加に失敗しました:", result.Error)
+		fmt.Println("🚨 Failed to add the task:", result.Error)
 		return
 	}
 

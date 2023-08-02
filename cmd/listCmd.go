@@ -46,7 +46,7 @@ func listTasks(cmd *cobra.Command, args []string) {
 	}
 
 	if result.Error != nil {
-		fmt.Println("🚨 タスクの取得に失敗しました:", result.Error)
+		fmt.Println("🚨 Failed to retrieve the task:", result.Error)
 		return
 	}
 

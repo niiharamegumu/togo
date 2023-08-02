@@ -57,7 +57,13 @@ togo list ["pen" | "done" | "all" | ""]
 既存のタスクのタイトルを更新するには、以下のコマンドを使用します。
 
 ```
-togo update [ID] "New Task Title"
+togo update [ID]
+```
+
+interactive mode
+
+```
+Enter the new task title : write new tittle
 ```
 
 ### Complete Task

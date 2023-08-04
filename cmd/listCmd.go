@@ -69,7 +69,8 @@ func listTasks(cmd *cobra.Command, args []string) {
 		})
 
 		if i != n-1 {
-			table.Append([]string{"", "", "", ""})
+			emptyRow := make([]string, len(models.TaskTableHeader))
+			table.Append(emptyRow)
 		}
 	}
 

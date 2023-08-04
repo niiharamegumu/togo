@@ -20,7 +20,7 @@ const (
 	StatusDone    = "Done"
 )
 
-var TaskTableHeader = []string{"ID", "Title", "Status", "Priority", "Date"}
+var TaskTableHeader = []string{"ID", "Title", "Status", "Priority", "Created "}
 
 func (task *Task) RenderTaskTable() {
 	table := tablewriter.NewWriter(os.Stdout)

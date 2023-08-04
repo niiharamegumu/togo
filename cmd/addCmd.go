@@ -24,27 +24,31 @@ func init() {
 }
 
 func addTask(cmd *cobra.Command, args []string) {
-	fmt.Printf("Enter the new task title : ")
-	reader := bufio.NewReader(os.Stdin)
-	taskTitle, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("🚨 Error reading input:", err)
-		return
+	scanner := bufio.NewScanner(os.Stdin)
+
+	fmt.Println("Input the new task title")
+	fmt.Println("Press Enter twice to finish, you can enter multiple lines")
+	var taskTitleBuilder strings.Builder
+	for {
+		fmt.Print("> ")
+		scanner.Scan()
+		line := scanner.Text()
+		if line == "" {
+			break
+		}
+		taskTitleBuilder.WriteString(line)
+		taskTitleBuilder.WriteString("\n")
 	}
 
-	taskTitle = strings.TrimSpace(taskTitle)
+	taskTitle := strings.TrimSpace(taskTitleBuilder.String())
 	if taskTitle == "" {
 		fmt.Println("👌 Exiting the process")
 		return
 	}
 
-	fmt.Printf("Enter the Priority (0-100) : ")
-	reader = bufio.NewReader(os.Stdin)
-	priorityStr, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("🚨 Error reading input:", err)
-		return
-	}
+	fmt.Print("Enter the Priority (0-100): ")
+	scanner.Scan()
+	priorityStr := scanner.Text()
 
 	priorityStr = strings.TrimSpace(priorityStr)
 	priority, err := strconv.Atoi(priorityStr)
@@ -70,6 +74,6 @@ func addTask(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Println("👉 Add Task")
+	fmt.Println("👉 Task Added")
 	task.RenderTaskTable()
 }

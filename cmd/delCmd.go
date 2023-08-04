@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/niiharamegumu/togo/models"
 	"github.com/spf13/cobra"
@@ -11,7 +13,7 @@ var delCmd = &cobra.Command{
 	Use:     "del",
 	Short:   "delete task",
 	Aliases: []string{"de"},
-	Example: "togo del [id]",
+	Example: "togo del [id1] [id2] [id3] ...",
 	Run:     deleteTask,
 }
 
@@ -21,24 +23,38 @@ func init() {
 
 func deleteTask(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
-		fmt.Println("❌ Please specify the ID of the task to be deleted")
+		fmt.Println("❌ Please specify the ID(s) of the task(s) to be deleted")
 		return
 	}
 
-	taskID := args[0]
+	var failedTasks []string
+	for _, arg := range args {
+		taskID, err := strconv.Atoi(arg)
+		if err != nil {
+			fmt.Printf("❌ Invalid task ID: %s\n", arg)
+			failedTasks = append(failedTasks, arg)
+			continue
+		}
 
-	var task models.Task
-	result := dbConn.First(&task, taskID)
-	if result.Error != nil {
-		fmt.Println("🚨 Failed to retrieve the task:", result.Error)
-		return
+		var task models.Task
+		result := dbConn.First(&task, taskID)
+		if result.Error != nil {
+			fmt.Printf("🚨 Failed to retrieve the task with ID %s: %v\n", arg, result.Error)
+			failedTasks = append(failedTasks, arg)
+			continue
+		}
+
+		result = dbConn.Delete(&task)
+		if result.Error != nil {
+			fmt.Printf("🚨 Failed to delete the task with ID %s: %v\n", arg, result.Error)
+			failedTasks = append(failedTasks, arg)
+			continue
+		}
+
+		fmt.Printf("👉 Deleted Task ID %s\n", arg)
 	}
 
-	result = dbConn.Delete(&task)
-	if result.Error != nil {
-		fmt.Println("🚨 Failed to delete the task:", result.Error)
-		return
+	if len(failedTasks) > 0 {
+		fmt.Printf("⚠️ Some tasks could not be deleted: %s\n", strings.Join(failedTasks, ", "))
 	}
-
-	fmt.Println("👉 Delete Task")
 }

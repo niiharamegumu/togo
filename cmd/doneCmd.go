@@ -41,6 +41,6 @@ func markTaskAsDone(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Printf("👉 Done Task\n")
+	fmt.Println("👉 Done Task")
 	task.RenderTaskTable()
 }

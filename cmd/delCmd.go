@@ -40,5 +40,5 @@ func deleteTask(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Print("👉 Delete Task")
+	fmt.Println("👉 Delete Task")
 }

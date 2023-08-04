@@ -70,6 +70,6 @@ func addTask(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Printf("👉 Add Task\n")
+	fmt.Println("👉 Add Task")
 	task.RenderTaskTable()
 }

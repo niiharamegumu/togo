@@ -15,6 +15,22 @@ var rootCmd = &cobra.Command{
 }
 
 var dbConn *gorm.DB
+var sortColumns = map[string]string{
+	"id":         "id",         // ID
+	"i":          "id",         // ID shorthand
+	"title":      "title",      // Title
+	"t":          "title",      // Title shorthand
+	"status":     "status",     // Status
+	"s":          "status",     // Status shorthand
+	"priority":   "priority",   // Priority
+	"p":          "priority",   // Priority shorthand
+	"created_at": "created_at", // CreatedAt
+	"c":          "created_at", // CreatedAt shorthand
+	"updated_at": "updated_at", // UpdatedAt
+	"u":          "updated_at", // UpdatedAt shorthand
+	"expire_at":  "expire_at",  // ExpireAt
+	"e":          "expire_at",  // ExpireAt shorthand
+}
 
 func init() {
 	var err error

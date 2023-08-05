@@ -24,21 +24,6 @@ var (
 	statusFlag    string
 )
 
-var sortColumns = map[string]string{
-	"id":         "id",         // ID
-	"i":          "id",         // ID shorthand
-	"title":      "title",      // Title
-	"t":          "title",      // Title shorthand
-	"status":     "status",     // Status
-	"s":          "status",     // Status shorthand
-	"priority":   "priority",   // Priority
-	"p":          "priority",   // Priority shorthand
-	"created_at": "created_at", // CreatedAt
-	"c":          "created_at", // CreatedAt shorthand
-	"updated_at": "updated_at", // UpdatedAt
-	"u":          "updated_at", // UpdatedAt shorthand
-}
-
 func init() {
 	rootCmd.AddCommand(listCmd)
 	listCmd.Flags().StringVarP(&sortBy, "sort", "s", "created_at", "\nSort tasks by column\n[options] :  id(i) | title(t) | status(s) | priority(p) | created_at(c) | updated_at(u)\n[default] : ")

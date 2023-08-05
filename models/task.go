@@ -28,7 +28,9 @@ func (task *Task) RenderTaskTable() {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader(TaskTableHeader)
 	var dueDateStr string
-	if !task.DueDate.IsZero() {
+	if !task.DueDate.IsZero() && task.DueDate.Before(time.Now()) {
+		dueDateStr = fmt.Sprintf("\x1b[31m%s\x1b[0m", task.DueDate.Format("2006/01/02"))
+	} else if !task.DueDate.IsZero() {
 		dueDateStr = task.DueDate.Format("2006/01/02")
 	} else {
 		dueDateStr = ""

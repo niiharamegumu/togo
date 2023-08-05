@@ -23,7 +23,7 @@ var updateCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(updateCmd)
 
-	updateCmd.Flags().StringVarP(&expire, "expire", "e", "", "\nSet the task's expiration date\n[format] : '2006-01-02'")
+	updateCmd.Flags().StringVarP(&dueDate, "due-date", "d", "", "\nSet the task's due date\n[format] : '2006-01-02'")
 }
 
 func updateTask(cmd *cobra.Command, args []string) {
@@ -45,14 +45,14 @@ func updateTask(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	var expireTime time.Time
-	if expire != "" {
-		expireTime, err = time.Parse("2006-01-02", expire)
+	var dueDateTime time.Time
+	if dueDate != "" {
+		dueDateTime, err = time.Parse("2006-01-02", dueDate)
 		if err != nil {
-			fmt.Println("🚨 Invalid date format for --expire flag. Please use 'YYYY-MM-DD'.")
+			fmt.Println("🚨 Invalid date format for --due-date flag. Please use 'YYYY-MM-DD'.")
 			return
 		}
-		task.ExpireAt = expireTime
+		task.DueDate = dueDateTime
 	}
 
 	task.RenderTaskTable()

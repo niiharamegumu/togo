@@ -23,7 +23,7 @@ var addCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(addCmd)
 
-	addCmd.Flags().StringVarP(&expire, "expire", "e", "", "\nSet the task's expiration date\n[format] : '2006-01-02'")
+	addCmd.Flags().StringVarP(&dueDate, "due-date", "d", "", "\nSet the task's due date\n[format] : '2006-01-02'")
 }
 
 func addTask(cmd *cobra.Command, args []string) {
@@ -65,11 +65,11 @@ func addTask(cmd *cobra.Command, args []string) {
 		priority = 100
 	}
 
-	var expireTime time.Time
-	if expire != "" {
-		expireTime, err = time.Parse("2006-01-02", expire)
+	var dueDateTime time.Time
+	if dueDate != "" {
+		dueDateTime, err = time.Parse("2006-01-02", dueDate)
 		if err != nil {
-			fmt.Println("🚨 Invalid date format for --expire flag. Please use 'YYYY-MM-DD'.")
+			fmt.Println("🚨 Invalid date format for --due-date flag. Please use 'YYYY-MM-DD'.")
 			return
 		}
 	}
@@ -78,7 +78,7 @@ func addTask(cmd *cobra.Command, args []string) {
 		Title:    taskTitle,
 		Status:   models.StatusPending,
 		Priority: priority,
-		ExpireAt: expireTime,
+		DueDate:  dueDateTime,
 	}
 
 	result := dbConn.Create(&task)

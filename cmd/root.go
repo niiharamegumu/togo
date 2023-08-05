@@ -15,7 +15,7 @@ var rootCmd = &cobra.Command{
 }
 
 var dbConn *gorm.DB
-var expire string
+var dueDate string
 var sortColumns = map[string]string{
 	"id":         "id",         // ID
 	"i":          "id",         // ID shorthand
@@ -29,8 +29,8 @@ var sortColumns = map[string]string{
 	"c":          "created_at", // CreatedAt shorthand
 	"updated_at": "updated_at", // UpdatedAt
 	"u":          "updated_at", // UpdatedAt shorthand
-	"expire_at":  "expire_at",  // ExpireAt
-	"e":          "expire_at",  // ExpireAt shorthand
+	"due_date":   "due_date",   // DueDate
+	"d":          "due_date",   // DueDate shorthand
 }
 
 func init() {

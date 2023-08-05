@@ -14,7 +14,7 @@ type Task struct {
 	Title    string    `gorm:"size:255; not null"`
 	Status   string    `gorm:"size:255; default:'Pending'; not null"`
 	Priority int       `gorm:"size:100; default:0; not null; min:0; max:100"`
-	ExpireAt time.Time `gorm:"type:datetime"`
+	DueDate  time.Time `gorm:"type:datetime"`
 }
 
 const (
@@ -22,16 +22,16 @@ const (
 	StatusDone    = "Done"
 )
 
-var TaskTableHeader = []string{"ID", "Title", "Status", "Priority", "Created", "Updated", "Expire"}
+var TaskTableHeader = []string{"ID", "Title", "Status", "Priority", "Created", "Updated", "DueDate"}
 
 func (task *Task) RenderTaskTable() {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader(TaskTableHeader)
-	var expireAtStr string
-	if !task.ExpireAt.IsZero() {
-		expireAtStr = task.ExpireAt.Format("2006/01/02")
+	var dueDateStr string
+	if !task.DueDate.IsZero() {
+		dueDateStr = task.DueDate.Format("2006/01/02")
 	} else {
-		expireAtStr = ""
+		dueDateStr = ""
 	}
 	table.Append([]string{
 		fmt.Sprintf("%d", task.ID),
@@ -40,7 +40,7 @@ func (task *Task) RenderTaskTable() {
 		fmt.Sprintf("%d", task.Priority),
 		task.CreatedAt.Format("2006/01/02 15:04"),
 		task.UpdatedAt.Format("2006/01/02 15:04"),
-		expireAtStr,
+		dueDateStr,
 	})
 	table.Render()
 }

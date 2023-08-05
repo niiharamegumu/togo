@@ -26,7 +26,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(listCmd)
-	listCmd.Flags().StringVarP(&sortBy, "sort", "s", "created_at", "\nSort tasks by column\n[options] :  id(i) | title(t) | status(s) | priority(p) | created_at(c) | updated_at(u) | expire_at(e)\n[default] : ")
+	listCmd.Flags().StringVarP(&sortBy, "sort", "s", "created_at", "\nSort tasks by column\n[options] :  id(i) | title(t) | status(s) | priority(p) | created_at(c) | updated_at(u) | due_date(d)\n[default] : ")
 	listCmd.Flags().StringVarP(&sortDirection, "sort-direction", "d", "asc", "\nSort direction\n[options] : asc | desc\n[default] : ")
 	listCmd.Flags().StringVarP(&statusFlag, "status", "S", "pen", "\nFilter tasks by status\n[options] : pen | done | all\n[default] : ")
 }
@@ -86,11 +86,11 @@ func listTasks(cmd *cobra.Command, args []string) {
 	table.SetHeader(models.TaskTableHeader)
 	n := len(tasks)
 	for i, task := range tasks {
-		var expireAtStr string
-		if !task.ExpireAt.IsZero() {
-			expireAtStr = task.ExpireAt.Format("2006/01/02")
+		var dueDateStr string
+		if !task.DueDate.IsZero() {
+			dueDateStr = task.DueDate.Format("2006/01/02")
 		} else {
-			expireAtStr = ""
+			dueDateStr = ""
 		}
 		table.Append([]string{
 			fmt.Sprintf("%d", task.ID),
@@ -99,7 +99,7 @@ func listTasks(cmd *cobra.Command, args []string) {
 			fmt.Sprintf("%d", task.Priority),
 			task.CreatedAt.Format("2006/01/02 15:04"),
 			task.UpdatedAt.Format("2006/01/02 15:04"),
-			expireAtStr,
+			dueDateStr,
 		})
 
 		if i != n-1 {

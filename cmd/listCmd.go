@@ -11,22 +11,45 @@ import (
 	"gorm.io/gorm"
 )
 
-var listCmd = &cobra.Command{
-	Use:     "list [status]",
-	Short:   "List tasks by status",
-	Aliases: []string{"l"},
-	Example: "togo list [ status: pen | done | all | '']",
-	Run:     listTasks,
+var (
+	listCmd = &cobra.Command{
+		Use:     "list [flags]",
+		Short:   "List tasks by status",
+		Aliases: []string{"l"},
+		Example: "togo list --status [status: pen | done | all | ''] --sort [ i | t | s | p | c ] --sort-direction [asc|desc]",
+		Run:     listTasks,
+	}
+	sortBy        string
+	sortDirection string
+	statusFlag    string
+)
+
+var sortColumns = map[string]string{
+	"id":         "id",         // ID
+	"i":          "id",         // ID shorthand
+	"title":      "title",      // Title
+	"t":          "title",      // Title shorthand
+	"status":     "status",     // Status
+	"s":          "status",     // Status shorthand
+	"priority":   "priority",   // Priority
+	"p":          "priority",   // Priority shorthand
+	"created_at": "created_at", // CreatedAt
+	"c":          "created_at", // CreatedAt shorthand
+	"updated_at": "updated_at", // UpdatedAt
+	"u":          "updated_at", // UpdatedAt shorthand
 }
 
 func init() {
 	rootCmd.AddCommand(listCmd)
+	listCmd.Flags().StringVarP(&sortBy, "sort", "s", "created_at", "\nSort tasks by column\n[options] :  id(i) | title(t) | status(s) | priority(p) | created_at(c) | updated_at(u)\n[default] : ")
+	listCmd.Flags().StringVarP(&sortDirection, "sort-direction", "d", "asc", "\nSort direction\n[options] : asc | desc\n[default] : ")
+	listCmd.Flags().StringVarP(&statusFlag, "status", "S", "pen", "\nFilter tasks by status\n[options] : pen | done | all")
 }
 
 func listTasks(cmd *cobra.Command, args []string) {
 	var statusFilter string
-	if len(args) > 0 {
-		statusFilter = args[0]
+	if statusFlag != "" {
+		statusFilter = statusFlag
 	}
 
 	var tasks []models.Task
@@ -56,6 +79,24 @@ func listTasks(cmd *cobra.Command, args []string) {
 
 	today := time.Now().Format("TODAY:2006/01/02")
 	fmt.Printf("%v\n", today)
+
+	if _, ok := sortColumns[sortBy]; !ok {
+		fmt.Println("❌ Invalid sort column", sortBy)
+		return
+	}
+
+	switch statusFilter {
+	case "pen", "":
+		result = dbConn.Order(fmt.Sprintf("%s %s", sortColumns[sortBy], sortDirection)).Find(&tasks, "status = ?", models.StatusPending)
+	case "done":
+		result = dbConn.Order(fmt.Sprintf("%s %s", sortColumns[sortBy], sortDirection)).Find(&tasks, "status = ?", models.StatusDone)
+	case "all":
+		result = dbConn.Order(fmt.Sprintf("%s %s", sortColumns[sortBy], sortDirection)).Find(&tasks)
+	default:
+		fmt.Println("❌ Invalid status filter", statusFilter)
+		return
+	}
+
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader(models.TaskTableHeader)
 	n := len(tasks)
@@ -66,6 +107,7 @@ func listTasks(cmd *cobra.Command, args []string) {
 			task.Status,
 			fmt.Sprintf("%d", task.Priority),
 			task.CreatedAt.Format("2006/01/02 15:04"),
+			task.UpdatedAt.Format("2006/01/02 15:04"),
 		})
 
 		if i != n-1 {

@@ -16,7 +16,7 @@ var (
 		Use:     "list [flags]",
 		Short:   "List tasks by status",
 		Aliases: []string{"l"},
-		Example: "togo list --status [status: pen | done | all] --sort [ i | t | s | p | c | u ] --sort-direction [asc|desc]",
+		Example: "togo list --status [status: pen | done | all] --sort [ i | t | s | p | c | u | e ] --sort-direction [asc|desc]",
 		Run:     listTasks,
 	}
 	sortBy        string
@@ -26,7 +26,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(listCmd)
-	listCmd.Flags().StringVarP(&sortBy, "sort", "s", "created_at", "\nSort tasks by column\n[options] :  id(i) | title(t) | status(s) | priority(p) | created_at(c) | updated_at(u)\n[default] : ")
+	listCmd.Flags().StringVarP(&sortBy, "sort", "s", "created_at", "\nSort tasks by column\n[options] :  id(i) | title(t) | status(s) | priority(p) | created_at(c) | updated_at(u) | expire_at(e)\n[default] : ")
 	listCmd.Flags().StringVarP(&sortDirection, "sort-direction", "d", "asc", "\nSort direction\n[options] : asc | desc\n[default] : ")
 	listCmd.Flags().StringVarP(&statusFlag, "status", "S", "pen", "\nFilter tasks by status\n[options] : pen | done | all\n[default] : ")
 }
@@ -86,6 +86,12 @@ func listTasks(cmd *cobra.Command, args []string) {
 	table.SetHeader(models.TaskTableHeader)
 	n := len(tasks)
 	for i, task := range tasks {
+		var expireAtStr string
+		if !task.ExpireAt.IsZero() {
+			expireAtStr = task.ExpireAt.Format("2006/01/02")
+		} else {
+			expireAtStr = ""
+		}
 		table.Append([]string{
 			fmt.Sprintf("%d", task.ID),
 			task.Title,
@@ -93,6 +99,7 @@ func listTasks(cmd *cobra.Command, args []string) {
 			fmt.Sprintf("%d", task.Priority),
 			task.CreatedAt.Format("2006/01/02 15:04"),
 			task.UpdatedAt.Format("2006/01/02 15:04"),
+			expireAtStr,
 		})
 
 		if i != n-1 {

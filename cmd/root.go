@@ -15,6 +15,7 @@ var rootCmd = &cobra.Command{
 }
 
 var dbConn *gorm.DB
+var expire string
 var sortColumns = map[string]string{
 	"id":         "id",         // ID
 	"i":          "id",         // ID shorthand

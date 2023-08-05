@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/niiharamegumu/togo/models"
 	"github.com/spf13/cobra"
@@ -21,6 +22,8 @@ var updateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(updateCmd)
+
+	updateCmd.Flags().StringVarP(&expire, "expire", "e", "", "\nSet the task's expiration date\n[format] : '2006-01-02'")
 }
 
 func updateTask(cmd *cobra.Command, args []string) {
@@ -40,6 +43,16 @@ func updateTask(cmd *cobra.Command, args []string) {
 	if result.Error != nil {
 		fmt.Println("🚨 Failed to retrieve the task:", result.Error)
 		return
+	}
+
+	var expireTime time.Time
+	if expire != "" {
+		expireTime, err = time.Parse("2006-01-02", expire)
+		if err != nil {
+			fmt.Println("🚨 Invalid date format for --expire flag. Please use 'YYYY-MM-DD'.")
+			return
+		}
+		task.ExpireAt = expireTime
 	}
 
 	task.RenderTaskTable()

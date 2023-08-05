@@ -16,7 +16,7 @@ var (
 		Use:     "list [flags]",
 		Short:   "List tasks by status",
 		Aliases: []string{"l"},
-		Example: "togo list --status [status: pen | done | all | ''] --sort [ i | t | s | p | c ] --sort-direction [asc|desc]",
+		Example: "togo list --status [status: pen | done | all] --sort [ i | t | s | p | c | u ] --sort-direction [asc|desc]",
 		Run:     listTasks,
 	}
 	sortBy        string
@@ -43,7 +43,7 @@ func init() {
 	rootCmd.AddCommand(listCmd)
 	listCmd.Flags().StringVarP(&sortBy, "sort", "s", "created_at", "\nSort tasks by column\n[options] :  id(i) | title(t) | status(s) | priority(p) | created_at(c) | updated_at(u)\n[default] : ")
 	listCmd.Flags().StringVarP(&sortDirection, "sort-direction", "d", "asc", "\nSort direction\n[options] : asc | desc\n[default] : ")
-	listCmd.Flags().StringVarP(&statusFlag, "status", "S", "pen", "\nFilter tasks by status\n[options] : pen | done | all")
+	listCmd.Flags().StringVarP(&statusFlag, "status", "S", "pen", "\nFilter tasks by status\n[options] : pen | done | all\n[default] : ")
 }
 
 func listTasks(cmd *cobra.Command, args []string) {

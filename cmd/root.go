@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 
 var dbConn *gorm.DB
 var dueDate string
-var sortColumns = map[string]string{
+var columnsMapping = map[string]string{
 	"id":         "id",         // ID
 	"i":          "id",         // ID shorthand
 	"title":      "title",      // Title

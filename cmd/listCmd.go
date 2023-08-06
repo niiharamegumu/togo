@@ -37,7 +37,7 @@ func listTasks(cmd *cobra.Command, args []string) {
 		statusFilter = statusFlag
 	}
 
-	if _, ok := sortColumns[sortBy]; !ok {
+	if _, ok := columnsMapping[sortBy]; !ok {
 		fmt.Println("❌ Invalid sort column", sortBy)
 		return
 	}
@@ -47,13 +47,13 @@ func listTasks(cmd *cobra.Command, args []string) {
 
 	switch statusFilter {
 	case "pen", "":
-		result = dbConn.Order(fmt.Sprintf("%s %s", sortColumns[sortBy], sortDirection)).Find(&tasks, "status = ?", models.StatusPending)
+		result = dbConn.Order(fmt.Sprintf("%s %s", columnsMapping[sortBy], sortDirection)).Find(&tasks, "status = ?", models.StatusPending)
 		if result.Error != nil {
 			fmt.Println("🚨 Failed to retrieve the task:", result.Error)
 			return
 		}
 	case "done":
-		result = dbConn.Order(fmt.Sprintf("%s %s", sortColumns[sortBy], sortDirection)).Find(&tasks, "status = ?", models.StatusDone)
+		result = dbConn.Order(fmt.Sprintf("%s %s", columnsMapping[sortBy], sortDirection)).Find(&tasks, "status = ?", models.StatusDone)
 		if result.Error != nil {
 			fmt.Println("🚨 Failed to retrieve the task:", result.Error)
 			return

@@ -11,10 +11,11 @@ import (
 
 type Task struct {
 	gorm.Model
-	Title    string    `gorm:"size:255; not null"`
-	Status   string    `gorm:"size:255; default:'Pending'; not null"`
-	Priority int       `gorm:"size:100; default:0; not null; min:0; max:100"`
-	DueDate  time.Time `gorm:"type:datetime"`
+	Title      string      `gorm:"size:255; not null"`
+	Status     string      `gorm:"size:255; default:'Pending'; not null"`
+	Priority   int         `gorm:"size:100; default:0; not null; min:0; max:100"`
+	DueDate    time.Time   `gorm:"type:datetime"`
+	Categories []*Category `gorm:"many2many:task_categories;"`
 }
 
 const (

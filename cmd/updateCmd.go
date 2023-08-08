@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/niiharamegumu/togo/models"
 	"github.com/spf13/cobra"
@@ -21,6 +22,8 @@ var updateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(updateCmd)
+
+	updateCmd.Flags().StringVarP(&dueDate, "due-date", "d", "", "\nSet the task's due date\n[format] : '2006-01-02'")
 }
 
 func updateTask(cmd *cobra.Command, args []string) {
@@ -40,6 +43,16 @@ func updateTask(cmd *cobra.Command, args []string) {
 	if result.Error != nil {
 		fmt.Println("🚨 Failed to retrieve the task:", result.Error)
 		return
+	}
+
+	var dueDateTime time.Time
+	if dueDate != "" {
+		dueDateTime, err = time.Parse("2006-01-02", dueDate)
+		if err != nil {
+			fmt.Println("🚨 Invalid date format for --due-date flag. Please use 'YYYY-MM-DD'.")
+			return
+		}
+		task.DueDate = dueDateTime
 	}
 
 	task.RenderTaskTable()

@@ -69,19 +69,25 @@ func updateTask(cmd *cobra.Command, args []string) {
 	scanner.Scan()
 	priorityStr := scanner.Text()
 
-	priorityStr = strings.TrimSpace(priorityStr)
-	priority, err := strconv.Atoi(priorityStr)
-	if err != nil {
-		priority = 0
-	}
-	if priority < 0 {
-		priority = 0
-	}
-	if priority > 100 {
-		priority = 100
-	}
-	task.Priority = priority
+	var priority int
 
+	if priorityStr == "" {
+		priority = task.Priority
+	} else {
+		priorityStr = strings.TrimSpace(priorityStr)
+		priority, err := strconv.Atoi(priorityStr)
+		if err != nil {
+			priority = 0
+		}
+		if priority < 0 {
+			priority = 0
+		}
+		if priority > 100 {
+			priority = 100
+		}
+	}
+
+	task.Priority = priority
 	result = dbConn.Save(&task)
 	if result.Error != nil {
 		fmt.Println("🚨 Failed to update the task:", result.Error)

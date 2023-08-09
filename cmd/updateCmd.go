@@ -88,16 +88,17 @@ func updateTask(cmd *cobra.Command, args []string) {
 		priority = task.Priority
 	} else {
 		priorityStr = strings.TrimSpace(priorityStr)
-		priority, err := strconv.Atoi(priorityStr)
+		p, err := strconv.Atoi(priorityStr)
 		if err != nil {
-			priority = 0
+			p = 0
 		}
-		if priority < 0 {
-			priority = 0
+		if p < 0 {
+			p = 0
 		}
-		if priority > 100 {
-			priority = 100
+		if p > 100 {
+			p = 100
 		}
+		priority = p
 	}
 
 	task.Priority = priority

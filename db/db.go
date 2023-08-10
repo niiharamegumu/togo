@@ -21,8 +21,8 @@ func ConnectDB() (*gorm.DB, error) {
 
 	rootPath := os.Getenv("TOGO_PROJECT_ROOT_PATH")
 	if rootPath == "" {
-		fmt.Println(".envに TOGO_PROJECT_ROOT_PATH を設定してください。")
-		return nil, fmt.Errorf("環境変数 TOGO_PROJECT_ROOT_PATH が設定されていません")
+		fmt.Println("Please set TOGO_PROJECT_ROOT_PATH in the .env file")
+		return nil, fmt.Errorf("The environment variable TOGO_PROJECT_ROOT_PATH is not set")
 	}
 
 	dbPath := fmt.Sprintf("%s/%s", os.Getenv("TOGO_PROJECT_ROOT_PATH"), "tasks.db")

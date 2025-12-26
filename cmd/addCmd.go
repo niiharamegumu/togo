@@ -56,12 +56,23 @@ func addTask(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	var maxID *uint
+	dbConn.Unscoped().Model(&models.Task{}).Select("MAX(id)").Scan(&maxID)
+
+	var nextID uint
+	if maxID == nil {
+		nextID = 1
+	} else {
+		nextID = *maxID + 1
+	}
+
 	task := models.Task{
 		Title:    taskTitle,
 		Status:   models.StatusPending,
 		Priority: priority,
 		DueDate:  dueDateTime,
 	}
+	task.ID = nextID
 
 	result := dbConn.Create(&task)
 	if result.Error != nil {

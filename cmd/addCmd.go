@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -33,7 +31,7 @@ func addTask(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	scanner := bufio.NewScanner(os.Stdin)
+	scanner := getStdinScanner()
 	fmt.Print("Enter the Priority (0-100): ")
 	scanner.Scan()
 	priorityStr := strings.TrimSpace(scanner.Text())

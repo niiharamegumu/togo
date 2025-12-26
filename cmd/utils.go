@@ -7,9 +7,20 @@ import (
 	"strings"
 )
 
+var (
+	stdinScanner *bufio.Scanner
+)
+
+func getStdinScanner() *bufio.Scanner {
+	if stdinScanner == nil {
+		stdinScanner = bufio.NewScanner(os.Stdin)
+	}
+	return stdinScanner
+}
+
 // InputMultiLine reads multiple lines of input from the user until two consecutive newlines are entered.
 func InputMultiLine(prompt string) string {
-	scanner := bufio.NewScanner(os.Stdin)
+	scanner := getStdinScanner()
 	fmt.Println(prompt)
 	fmt.Println("Press Enter twice to finish, you can enter multiple lines")
 

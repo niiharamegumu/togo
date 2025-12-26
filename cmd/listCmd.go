@@ -2,11 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/niiharamegumu/togo/models"
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"gorm.io/gorm"
 )
@@ -75,32 +73,6 @@ func listTasks(cmd *cobra.Command, args []string) {
 
 	today := time.Now().Format("TODAY:2006/01/02")
 	fmt.Printf("%v\n", today)
-	n := len(tasks)
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader(models.TaskTableHeader)
-	for i, task := range tasks {
-		var dueDateStr string
-		if !task.DueDate.IsZero() && task.DueDate.Before(time.Now()) {
-			dueDateStr = fmt.Sprintf("\x1b[31m%s\x1b[0m", task.DueDate.Format("2006/01/02"))
-		} else if !task.DueDate.IsZero() {
-			dueDateStr = task.DueDate.Format("2006/01/02")
-		} else {
-			dueDateStr = ""
-		}
-		table.Append([]string{
-			fmt.Sprintf("%d", task.ID),
-			task.Title,
-			task.Status,
-			fmt.Sprintf("%d", task.Priority),
-			task.CreatedAt.Format("2006/01/02 15:04"),
-			task.UpdatedAt.Format("2006/01/02 15:04"),
-			dueDateStr,
-		})
-		if i != n-1 {
-			emptyRow := make([]string, len(models.TaskTableHeader))
-			table.Append(emptyRow)
-		}
-	}
 
-	table.Render()
+	models.RenderTasksTable(tasks)
 }

@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -57,37 +55,20 @@ func updateTask(cmd *cobra.Command, args []string) {
 
 	task.RenderTaskTable()
 
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("Input the new task title")
-	fmt.Println("Press Enter twice to finish, you can enter multiple lines")
-	var newTitleBuilder strings.Builder
-	for {
-		fmt.Print("> ")
-		scanner.Scan()
-		line := scanner.Text()
-		if line == "" {
-			break
-		}
-		newTitleBuilder.WriteString(line)
-		newTitleBuilder.WriteString("\n")
-	}
+	task.RenderTaskTable()
 
-	newTitle := strings.TrimSpace(newTitleBuilder.String())
+	newTitle := InputMultiLine("Input the new task title (Leave blank to keep current)")
 	if newTitle == "" {
 		newTitle = task.Title
 	}
 	task.Title = newTitle
 
-	fmt.Print("Enter the Priority (0-100): ")
+	scanner := getStdinScanner()
+	fmt.Print("Enter the Priority (0-100, Leave blank to keep current): ")
 	scanner.Scan()
-	priorityStr := scanner.Text()
+	priorityStr := strings.TrimSpace(scanner.Text())
 
-	var priority int
-
-	if priorityStr == "" {
-		priority = task.Priority
-	} else {
-		priorityStr = strings.TrimSpace(priorityStr)
+	if priorityStr != "" {
 		p, err := strconv.Atoi(priorityStr)
 		if err != nil {
 			p = 0
@@ -98,10 +79,8 @@ func updateTask(cmd *cobra.Command, args []string) {
 		if p > 100 {
 			p = 100
 		}
-		priority = p
+		task.Priority = p
 	}
-
-	task.Priority = priority
 	result = dbConn.Save(&task)
 	if result.Error != nil {
 		fmt.Println("🚨 Failed to update the task:", result.Error)

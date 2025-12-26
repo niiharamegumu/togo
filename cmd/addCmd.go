@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -27,33 +25,17 @@ func init() {
 }
 
 func addTask(cmd *cobra.Command, args []string) {
-	scanner := bufio.NewScanner(os.Stdin)
-
-	fmt.Println("Input the new task title")
-	fmt.Println("Press Enter twice to finish, you can enter multiple lines")
-	var taskTitleBuilder strings.Builder
-	for {
-		fmt.Print("> ")
-		scanner.Scan()
-		line := scanner.Text()
-		if line == "" {
-			break
-		}
-		taskTitleBuilder.WriteString(line)
-		taskTitleBuilder.WriteString("\n")
-	}
-
-	taskTitle := strings.TrimSpace(taskTitleBuilder.String())
+	taskTitle := InputMultiLine("Input the new task title")
 	if taskTitle == "" {
 		fmt.Println("👌 Exiting the process")
 		return
 	}
 
+	scanner := getStdinScanner()
 	fmt.Print("Enter the Priority (0-100): ")
 	scanner.Scan()
-	priorityStr := scanner.Text()
+	priorityStr := strings.TrimSpace(scanner.Text())
 
-	priorityStr = strings.TrimSpace(priorityStr)
 	priority, err := strconv.Atoi(priorityStr)
 	if err != nil {
 		priority = 0

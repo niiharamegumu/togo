@@ -1,89 +1,99 @@
 # TOGO
 
-TOGO is a simple CLI tool for task management that runs on the terminal. You can use the following commands to perform tasks such as adding, listing, updating, and completing tasks.
+TOGO is a simple, terminal-based task management CLI tool written in Go. It allows you to manage your tasks efficiently with commands to add, list, update, and complete tasks directly from your shell.
+
+## Features
+
+- **Interactive Task Addition**: Easily add tasks via an interactive prompt.
+- **Task Listing**: Filter tasks by status (Pending, Done, or All).
+- **Task Management**: Update, mark as done, or delete tasks by ID.
+- **Customizable Sorting**: Sort listed tasks by various attributes (Title, Priority, Due Date, etc.).
 
 ## Installation
 
-To install TOGO, follow these steps:
+### Using Go
 
-1. Make sure you have Go language installed. If it's not installed, download the installer from the Go official website and install it. After that, create a new project:
-
-```
-go mod init xxx
-```
-
-2. Use the `go get` command to install TOGO:
+You can install TOGO directly using the Go toolchain:
 
 ```shell
-go get github.com/niiharamegumu/togo
+go install github.com/niiharamegumu/togo@latest
 ```
 
-3. Specify the project root path in the environment variable of the project root:
+### Using Makefile (for development)
 
-```
-export TOGO_PROJECT_ROOT_PATH=
-```
+If you have the source code locally, you can use the provided Makefile:
 
-```
-source ~/.zshrc
+```shell
+make install
 ```
 
-4. The `togo` command will now be available. Execute the command below to confirm it's working:
+## Configuration
 
+By default, TOGO stores its database at `~/.togo/tasks.db`. The directory and database file will be created automatically on the first run.
+
+If you wish to change the storage location, you can set the `TOGO_PROJECT_ROOT_PATH` environment variable:
+
+```shell
+export TOGO_PROJECT_ROOT_PATH=/path/to/your/preferred/directory
 ```
-togo
-```
 
-## Command List
+## Usage
 
-### Add Task
+### Commands
 
-To add a new task, use the following command:
+#### Add a Task
 
-```
+```shell
 togo add
 ```
+Follow the interactive prompt to enter the task title.
 
-interactive mode
+#### List Tasks
 
-```
-Enter the new task title : write new tittle
-```
-
-### List Tasks
-
-To display the list of current tasks, use the following command with the option [pen | done | all]:
-
-```
-togo list ["pen" | "done" | "all" | ""]
+```shell
+togo list [status]
 ```
 
-### Update Task
+- `pen`: List pending tasks (default).
+- `done`: List completed tasks.
+- `all`: List all tasks.
 
-既存のタスクのタイトルを更新するには、以下のコマンドを使用します。
-
+Example with flags:
+```shell
+togo list --status all --sort priority --sort-direction desc
 ```
+
+#### Update a Task
+
+```shell
 togo update [ID]
 ```
+Updates the title of the task with the specified ID.
 
-interactive mode
+#### Complete a Task
 
-```
-Enter the new task title : write new tittle
-```
-
-### Complete Task
-
-To mark a task as completed, use the following command:
-
-```
+```shell
 togo done [ID]
 ```
+Marks the task with the specified ID as completed.
 
-### Delete Task
+#### Delete a Task
 
-To delete a task, use the following command:
-
-```
+```shell
 togo del [ID]
 ```
+Removes the task with the specified ID.
+
+### Development
+
+The following `make` targets are available:
+
+- `make build`: Build the `togo` binary.
+- `make test`: Run project tests.
+- `make run`: Run the application directly.
+- `make clean`: Remove build artifacts.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details (if applicable).
+

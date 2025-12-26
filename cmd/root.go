@@ -37,7 +37,7 @@ func init() {
 	var err error
 	dbConn, err = db.ConnectDB()
 	if err != nil {
-		fmt.Println("🚨 データベースに接続できませんでした:", err)
+		fmt.Println("🚨 Could not connect to the database:", err)
 		os.Exit(1)
 	}
 }

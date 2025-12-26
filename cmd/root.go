@@ -12,6 +12,14 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "togo",
 	Short: "Task Management CLI",
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		var err error
+		dbConn, err = db.ConnectDB()
+		if err != nil {
+			return fmt.Errorf("could not connect to the database: %w", err)
+		}
+		return nil
+	},
 }
 
 var dbConn *gorm.DB
@@ -34,12 +42,6 @@ var columnsMapping = map[string]string{
 }
 
 func init() {
-	var err error
-	dbConn, err = db.ConnectDB()
-	if err != nil {
-		fmt.Println("🚨 Could not connect to the database:", err)
-		os.Exit(1)
-	}
 }
 
 func Execute() {

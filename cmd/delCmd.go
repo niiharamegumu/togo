@@ -44,7 +44,7 @@ func deleteTask(cmd *cobra.Command, args []string) {
 			continue
 		}
 
-		result = dbConn.Delete(&task)
+		result = dbConn.Unscoped().Delete(&task)
 		if result.Error != nil {
 			fmt.Printf("🚨 Failed to delete the task with ID %s: %v\n", arg, result.Error)
 			failedTasks = append(failedTasks, arg)

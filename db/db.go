@@ -19,13 +19,25 @@ func ConnectDB() (*gorm.DB, error) {
 		return DB, nil
 	}
 
+	var dbPath string
 	rootPath := os.Getenv("TOGO_PROJECT_ROOT_PATH")
-	if rootPath == "" {
-		fmt.Println("Please set TOGO_PROJECT_ROOT_PATH in the .env file")
-		return nil, fmt.Errorf("The environment variable TOGO_PROJECT_ROOT_PATH is not set")
+
+	if rootPath != "" {
+		dbPath = fmt.Sprintf("%s/tasks.db", rootPath)
+	} else {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get user home directory: %w", err)
+		}
+		togoDir := fmt.Sprintf("%s/.togo", home)
+		if _, err := os.Stat(togoDir); os.IsNotExist(err) {
+			if err := os.MkdirAll(togoDir, 0755); err != nil {
+				return nil, fmt.Errorf("failed to create directory %s: %w", togoDir, err)
+			}
+		}
+		dbPath = fmt.Sprintf("%s/tasks.db", togoDir)
 	}
 
-	dbPath := fmt.Sprintf("%s/%s", os.Getenv("TOGO_PROJECT_ROOT_PATH"), "tasks.db")
 	DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
 		return nil, err

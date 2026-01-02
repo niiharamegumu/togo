@@ -6,23 +6,18 @@ import (
 	"time"
 
 	"github.com/olekukonko/tablewriter"
-	"gorm.io/gorm"
 )
 
 type Task struct {
-	gorm.Model
-	Title    string    `gorm:"size:255; not null"`
-	Status   string    `gorm:"size:255; default:'Pending'; not null"`
-	Priority int       `gorm:"size:100; default:0; not null; min:0; max:100"`
-	DueDate  time.Time `gorm:"type:datetime"`
+	ID        uint      `gorm:"primarykey"`
+	Title     string    `gorm:"size:255; not null"`
+	Priority  int       `gorm:"size:100; default:0; not null; min:0; max:100"`
+	DueDate   time.Time `gorm:"type:datetime"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
-const (
-	StatusPending = "Pending"
-	StatusDone    = "Done"
-)
-
-var TaskTableHeader = []string{"ID", "Title", "Status", "Priority", "Created", "Updated", "DueDate"}
+var TaskTableHeader = []string{"ID", "TITLE", "CREATED", "DUEDATE", "UPDATED", "PRIORITY"}
 
 func (task *Task) RenderTaskTable() {
 	RenderTasksTable([]Task{*task})
@@ -31,6 +26,9 @@ func (task *Task) RenderTaskTable() {
 func RenderTasksTable(tasks []Task) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader(TaskTableHeader)
+
+	// Set fixed width for Title column (index 1)
+	table.SetColMinWidth(1, 50)
 
 	n := len(tasks)
 	for i, task := range tasks {
@@ -46,11 +44,10 @@ func RenderTasksTable(tasks []Task) {
 		table.Append([]string{
 			fmt.Sprintf("%d", task.ID),
 			task.Title,
-			task.Status,
-			fmt.Sprintf("%d", task.Priority),
 			task.CreatedAt.Format("2006/01/02 15:04"),
-			task.UpdatedAt.Format("2006/01/02 15:04"),
 			dueDateStr,
+			task.UpdatedAt.Format("2006/01/02 15:04"),
+			fmt.Sprintf("%d", task.Priority),
 		})
 
 		// Add empty row between tasks for better readability if multiple

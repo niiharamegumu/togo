@@ -11,31 +11,13 @@ func TestListTasks(t *testing.T) {
 	db := setupTestDB(t)
 
 	// Seed data
-	db.Create(&models.Task{Title: "Pending Task", Status: models.StatusPending})
-	db.Create(&models.Task{Title: "Done Task", Status: models.StatusDone})
+	db.Create(&models.Task{Title: "Pending Task"})
+	db.Create(&models.Task{Title: "Done Task"})
 
-	// Test default list (pending)
+	// Test default list (all)
 	output := captureOutput(func() {
 		listTasks(nil, []string{})
 	})
 	assert.Contains(t, output, "Pending Task")
-	assert.NotContains(t, output, "Done Task")
-
-	// Test list done
-	statusFlag = "done"
-	output = captureOutput(func() {
-		listTasks(nil, []string{"done"})
-	})
 	assert.Contains(t, output, "Done Task")
-	assert.NotContains(t, output, "Pending Task")
-	statusFlag = "pen" // reset
-
-	// Test list all
-	statusFlag = "all"
-	output = captureOutput(func() {
-		listTasks(nil, []string{"all"})
-	})
-	assert.Contains(t, output, "Pending Task")
-	assert.Contains(t, output, "Done Task")
-	statusFlag = "pen" // reset
 }

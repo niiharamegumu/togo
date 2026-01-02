@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/charmbracelet/huh"
 	"github.com/niiharamegumu/togo/models"
 	"github.com/spf13/cobra"
 )
@@ -13,7 +14,7 @@ var delCmd = &cobra.Command{
 	Use:     "del",
 	Short:   "delete task",
 	Aliases: []string{"de"},
-	Example: "togo del [id1] [id2] [id3] ...",
+	Example: "togo del",
 	Run:     deleteTask,
 }
 
@@ -22,39 +23,53 @@ func init() {
 }
 
 func deleteTask(cmd *cobra.Command, args []string) {
-	if len(args) == 0 {
-		fmt.Println("❌ Please specify the ID(s) of the task(s) to be deleted")
+	var tasks []models.Task
+	result := dbConn.Find(&tasks)
+	if result.Error != nil {
+		fmt.Println("🚨 Failed to retrieve tasks:", result.Error)
 		return
 	}
 
-	var failedTasks []string
-	for _, arg := range args {
-		taskID, err := strconv.Atoi(arg)
-		if err != nil {
-			fmt.Printf("❌ Invalid task ID: %s\n", arg)
-			failedTasks = append(failedTasks, arg)
-			continue
-		}
-
-		var task models.Task
-		result := dbConn.First(&task, taskID)
-		if result.Error != nil {
-			fmt.Printf("🚨 Failed to retrieve the task with ID %s: %v\n", arg, result.Error)
-			failedTasks = append(failedTasks, arg)
-			continue
-		}
-
-		result = dbConn.Unscoped().Delete(&task)
-		if result.Error != nil {
-			fmt.Printf("🚨 Failed to delete the task with ID %s: %v\n", arg, result.Error)
-			failedTasks = append(failedTasks, arg)
-			continue
-		}
-
-		fmt.Printf("👉 Deleted Task ID %s\n", arg)
+	if len(tasks) == 0 {
+		fmt.Println("👉 No Tasks to delete")
+		return
 	}
 
-	if len(failedTasks) > 0 {
-		fmt.Printf("⚠️ Some tasks could not be deleted: %s\n", strings.Join(failedTasks, ", "))
+	options := make([]huh.Option[string], len(tasks))
+	for i, task := range tasks {
+		cleanTitle := strings.ReplaceAll(task.Title, "\n", " ")
+		label := fmt.Sprintf("[%d] %s", task.ID, cleanTitle)
+		options[i] = huh.NewOption(label, strconv.Itoa(int(task.ID)))
+	}
+
+	var selectedIDs []string
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewMultiSelect[string]().
+				Title("Select tasks to delete").
+				Options(options...).
+				Value(&selectedIDs),
+		),
+	)
+
+	err := form.Run()
+	if err != nil {
+		fmt.Println("❌ Selection cancelled or failed")
+		return
+	}
+
+	if len(selectedIDs) == 0 {
+		fmt.Println("👉 No tasks selected")
+		return
+	}
+
+	for _, idStr := range selectedIDs {
+		id, _ := strconv.Atoi(idStr)
+		res := dbConn.Delete(&models.Task{}, id)
+		if res.Error != nil {
+			fmt.Printf("🚨 Failed to delete task ID %d: %v\n", id, res.Error)
+		} else {
+			fmt.Printf("👉 Deleted Task ID %d\n", id)
+		}
 	}
 }

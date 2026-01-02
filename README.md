@@ -1,13 +1,15 @@
 # TOGO
 
-TOGO is a simple, terminal-based task management CLI tool written in Go. It allows you to manage your tasks efficiently with commands to add, list, update, and complete tasks directly from your shell.
+TOGO is a simple, terminal-based TODO list CLI tool written in Go. Focused on simplicity, it allows you to manage tasks efficiently with rich interactive prompts.
 
 ## Features
 
-- **Interactive Task Addition**: Easily add tasks via an interactive prompt.
-- **Task Listing**: Filter tasks by status (Pending, Done, or All).
-- **Task Management**: Update, mark as done, or delete tasks by ID.
-- **Customizable Sorting**: Sort listed tasks by various attributes (Title, Priority, Due Date, etc.).
+- **Interactive UI**: Powered by `charmbracelet/huh`, providing a modern terminal experience for adding, updating, and deleting tasks.
+- **Physical Deletion**: Simplified task management workflow—complete tasks by deleting them permanently.
+- **Detailed Table View**: View your tasks in a clean, formatted table with fixed-width columns for readability.
+- **Smart Sorting**: 
+  - Sort by Title, Priority, Dates, etc.
+  - Tasks without a due date are automatically pushed to the bottom of the list when sorting by Due Date.
 
 ## Installation
 
@@ -21,17 +23,15 @@ go install github.com/niiharamegumu/togo@latest
 
 ### Using Makefile (for development)
 
-If you have the source code locally, you can use the provided Makefile:
-
 ```shell
 make install
 ```
 
 ## Configuration
 
-By default, TOGO stores its database at `~/.togo/tasks.db`. The directory and database file will be created automatically on the first run.
+By default, TOGO stores its database at `~/.togo/tasks.db`.
 
-If you wish to change the storage location, you can set the `TOGO_PROJECT_ROOT_PATH` environment variable:
+If you wish to change the storage location, set the `TOGO_PROJECT_ROOT_PATH` environment variable:
 
 ```shell
 export TOGO_PROJECT_ROOT_PATH=/path/to/your/preferred/directory
@@ -41,52 +41,43 @@ export TOGO_PROJECT_ROOT_PATH=/path/to/your/preferred/directory
 
 ### Commands
 
-#### Add a Task
+#### Add a Task (`add`, `a`)
 
 ```shell
 togo add
 ```
-Follow the interactive prompt to enter the task title.
+Opens an interactive form to set the title, priority (0-100), and due date (YYYY-MM-DD).
 
-#### List Tasks
-
-```shell
-togo list [status]
-```
-
-- `pen`: List pending tasks (default).
-- `done`: List completed tasks.
-- `all`: List all tasks.
-
-Example with flags:
-```shell
-togo list --status all --sort priority --sort-direction desc
-```
-
-#### Update a Task
+#### List Tasks (`list`, `l`)
 
 ```shell
-togo update [ID]
+togo list [flags]
 ```
-Updates the title of the task with the specified ID.
 
-#### Complete a Task
+**Sorting Options:**
+- `--sort`, `-s`: `id(i)`, `title(t)`, `priority(p)`, `created_at(c)`, `updated_at(u)`, `due_date(d)`
+- `--sort-direction`, `-d`: `asc`, `desc`
+
+Example:
+```shell
+togo list --sort priority --sort-direction desc
+```
+
+#### Update a Task (`update`, `u`)
 
 ```shell
-togo done [ID]
+togo update
 ```
-Marks the task with the specified ID as completed.
+Select a task from the list and update its details (Title, Priority, Due Date) via an interactive form.
 
-#### Delete a Task
+#### Delete a Task (`del`, `de`)
 
 ```shell
-togo del [ID]
+togo del
 ```
-Removes the task with the specified ID.
+Select one or more tasks using a multi-select list to permanently remove them.
 
-### Development
-
-The following `make` targets are available:
+## Development
 
 - `make build`: Build the `togo` binary.
 - `make test`: Run project tests.
@@ -95,5 +86,5 @@ The following `make` targets are available:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details (if applicable).
+MIT License.
 

@@ -42,17 +42,5 @@ func captureOutput(f func()) string {
 	return <-outC
 }
 
-// mockStdin mocks Stdin with the provided input string
-func mockStdin(input string, f func()) {
-	oldStdin := os.Stdin
-	r, w, _ := os.Pipe()
-	os.Stdin = r
-	stdinScanner = nil // Reset scanner singleton for test
-
-	w.Write([]byte(input))
-	w.Close()
-
-	f()
-	os.Stdin = oldStdin
-	stdinScanner = nil // Reset back
-}
+// mockStdin was removed because huh relies on tea.Program which is harder to mock via simple stdin redirection.
+// Interactive commands are now manually verified.

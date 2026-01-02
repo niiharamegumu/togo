@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/huh"
 	"github.com/niiharamegumu/togo/models"
 	"github.com/spf13/cobra"
 )
@@ -25,35 +26,77 @@ func init() {
 }
 
 func addTask(cmd *cobra.Command, args []string) {
-	taskTitle := InputMultiLine("Input the new task title")
-	if taskTitle == "" {
-		fmt.Println("👌 Exiting the process")
+	var (
+		taskTitle   string
+		priorityStr string
+		dueDateStr  string
+	)
+
+	// If flags are set, use them as default or skip?
+	// For simplicity and "optimizing for huh", we'll make it fully interactive but use flags as initial values if present.
+	if dueDate != "" {
+		dueDateStr = dueDate
+	}
+
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewText().
+				Title("Task Title").
+				Value(&taskTitle).
+				Validate(func(str string) error {
+					if strings.TrimSpace(str) == "" {
+						return fmt.Errorf("title cannot be empty")
+					}
+					return nil
+				}),
+
+			huh.NewInput().
+				Title("Priority (0-100)").
+				Value(&priorityStr).
+				Validate(func(str string) error {
+					if str == "" {
+						return nil // Allow empty for default
+					}
+					p, err := strconv.Atoi(str)
+					if err != nil {
+						return fmt.Errorf("priority must be a number")
+					}
+					if p < 0 || p > 100 {
+						return fmt.Errorf("priority must be between 0 and 100")
+					}
+					return nil
+				}),
+
+			huh.NewInput().
+				Title("Due Date (YYYY-MM-DD)").
+				Value(&dueDateStr).
+				Validate(func(str string) error {
+					if str == "" {
+						return nil // Allow empty
+					}
+					_, err := time.Parse("2006-01-02", str)
+					if err != nil {
+						return fmt.Errorf("invalid date format")
+					}
+					return nil
+				}),
+		),
+	)
+
+	err := form.Run()
+	if err != nil {
+		fmt.Println("❌ Operation cancelled")
 		return
 	}
 
-	scanner := getStdinScanner()
-	fmt.Print("Enter the Priority (0-100): ")
-	scanner.Scan()
-	priorityStr := strings.TrimSpace(scanner.Text())
-
-	priority, err := strconv.Atoi(priorityStr)
-	if err != nil {
-		priority = 0
-	}
-	if priority < 0 {
-		priority = 0
-	}
-	if priority > 100 {
-		priority = 100
+	priority := 0
+	if priorityStr != "" {
+		priority, _ = strconv.Atoi(priorityStr)
 	}
 
 	var dueDateTime time.Time
-	if dueDate != "" {
-		dueDateTime, err = time.Parse("2006-01-02", dueDate)
-		if err != nil {
-			fmt.Println("🚨 Invalid date format for --due-date flag. Please use 'YYYY-MM-DD'.")
-			return
-		}
+	if dueDateStr != "" {
+		dueDateTime, _ = time.Parse("2006-01-02", dueDateStr)
 	}
 
 	var maxID *uint
@@ -68,7 +111,6 @@ func addTask(cmd *cobra.Command, args []string) {
 
 	task := models.Task{
 		Title:    taskTitle,
-		Status:   models.StatusPending,
 		Priority: priority,
 		DueDate:  dueDateTime,
 	}

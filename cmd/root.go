@@ -29,8 +29,6 @@ var columnsMapping = map[string]string{
 	"i":          "id",         // ID shorthand
 	"title":      "title",      // Title
 	"t":          "title",      // Title shorthand
-	"status":     "status",     // Status
-	"s":          "status",     // Status shorthand
 	"priority":   "priority",   // Priority
 	"p":          "priority",   // Priority shorthand
 	"created_at": "created_at", // CreatedAt

@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
 func TestRenderTasksTable(t *testing.T) {
@@ -21,15 +20,12 @@ func TestRenderTasksTable(t *testing.T) {
 	now := time.Now()
 	tasks := []Task{
 		{
-			Model: gorm.Model{
-				ID:        1,
-				CreatedAt: now,
-				UpdatedAt: now,
-			},
-			Title:    "Test Task",
-			Status:   StatusPending,
-			Priority: 10,
-			DueDate:  now.Add(24 * time.Hour),
+			ID:        1,
+			CreatedAt: now,
+			UpdatedAt: now,
+			Title:     "Test Task",
+			Priority:  10,
+			DueDate:   now.Add(24 * time.Hour),
 		},
 	}
 
@@ -48,7 +44,6 @@ func TestRenderTasksTable(t *testing.T) {
 	out := <-outC
 
 	assert.Contains(t, out, "Test Task")
-	assert.Contains(t, out, "Pending")
 	assert.Contains(t, out, "10")
 	assert.Contains(t, out, "ID")
 }
